@@ -1,0 +1,40 @@
+# Visual Studio / .NET
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Tt]emp/
+*.cache
+*.pdb
+*.dbmdl
+*.bak
+*.log
+*.tlog
+
+# Build results
+*.exe
+*.dll
+*.app
+*.out
+*.iobj
+*.ipdb
+
+# Publish
+publish/
+*.Publish.xml
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+project.lock.json
+
+# Others
+*.DS_Store
+Thumbs.db
+*.orig

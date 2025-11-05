@@ -1,0 +1,205 @@
+﻿@page "/export-demo"
+@rendermode InteractiveServer
+@using BlazorCsvExporter.Components
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+
+<PageTitle>BlazorCsvExporter Demo — CSV Export</PageTitle>
+
+<h2>CSV Export Demo</h2>
+
+<div class="card">
+    <p>
+        This example exports a simple list of employees to CSV format.
+    </p>
+
+    <!-- Interactive controls -->
+    <div class="demo-controls">
+        <div class="demo-controls-row">
+            <label>
+                <span class="control-label">Delimiter:</span>
+                <select @bind="delimiter">
+                    <option value=";">Semicolon (;)</option>
+                    <option value=",">Comma (,)</option>
+                    <option value="\t">Tab (\t)</option>
+                </select>
+            </label>
+
+            <label class="checkbox-label">
+                <input type="checkbox" @bind="includeHeader" />
+                Include header row
+            </label>
+        </div>
+
+        <div class="demo-controls-row">
+            <span class="control-label">Columns:</span>
+            @foreach (var col in allColumns)
+            {
+                <label class="column-option">
+                    <input type="checkbox"
+                           value="@col"
+                           checked="@selectedColumns.Contains(col)"
+                           @onchange="e => ToggleColumn(col, e)" />
+                    @col
+                </label>
+            }
+        </div>
+    </div>
+
+    <!-- Export summary -->
+    <p class="note small">
+        <strong>@employees.Count</strong> record(s) will be exported using
+        <code>@GetDelimiterLabel()</code> as delimiter,
+        @(includeHeader ? "including" : "without") a header row.
+    </p>
+
+    <!-- Employee table -->
+    @if (employees.Any())
+    {
+        <table class="demo-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th class="text-end">Salary</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var e in employees)
+                {
+                    <tr>
+                        <td>@e.Name</td>
+                        <td>@e.Department</td>
+                        <td class="text-end">@e.Salary</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert">
+            No data available to export.
+        </div>
+    }
+
+    <!-- Export button and status -->
+    <CsvExporter TItem="Employee"
+                 Data="@employees"
+                 FileName="@fileName"
+                 IncludeHeader="@includeHeader"
+                 Delimiter="@delimiter"
+                 Columns="SelectedColumns"
+                 ButtonText="@buttonText"
+                 OnCsvGenerated="HandleCsvGenerated" />
+
+    <p class="note small">
+        Status: @statusMessage
+    </p>
+</div>
+
+<!-- CSV preview -->
+@if (!string.IsNullOrEmpty(csvPreview))
+{
+    <div class="csv-preview">
+        <div class="csv-preview-header">
+            <span>💾 Generated CSV Preview</span>
+            <button type="button"
+                    class="csv-copy-btn"
+                    @onclick="CopyCsvToClipboard">
+                Copy
+            </button>
+        </div>
+        <pre>@csvPreview</pre>
+    </div>
+}
+
+<!-- Developer info -->
+<div class="card dev-note">
+    <strong>Developer notes</strong>
+    <ul>
+        <li>Uses <code>CsvService.GenerateCsv&lt;T&gt;</code> under the hood.</li>
+        <li>CSV is generated in-memory and downloaded via a <code>data:</code> URL.</li>
+        <li>No external CSV libraries or dependencies are required.</li>
+    </ul>
+</div>
+
+@code {
+    private List<Employee> employees = new()
+    {
+        new() { Name = "John",  Department = "IT",       Salary = 45000 },
+        new() { Name = "Anna",  Department = "HR",       Salary = 42000 },
+        new() { Name = "Peter", Department = "Finance",  Salary = 50000 }
+    };
+
+    private readonly string[] allColumns = new[]
+    {
+        nameof(Employee.Name),
+        nameof(Employee.Department),
+        nameof(Employee.Salary)
+    };
+
+    private readonly HashSet<string> selectedColumns = new();
+
+    private string delimiter = ";";
+    private bool includeHeader = true;
+    private string fileName = "Employees.csv";
+    private string buttonText = "Download Employee List";
+    private string? csvPreview;
+    private string statusMessage = "Ready to export";
+
+    protected override void OnInitialized()
+    {
+        // Select all columns by default
+        foreach (var col in allColumns)
+        {
+            selectedColumns.Add(col);
+        }
+    }
+
+    private IEnumerable<string> SelectedColumns =>
+        selectedColumns.Any() ? selectedColumns : Array.Empty<string>();
+
+    private void ToggleColumn(string column, ChangeEventArgs e)
+    {
+        bool isChecked = e.Value is bool b && b
+                         || e.Value is string s && (s == "true" || s == "on");
+
+        if (isChecked)
+            selectedColumns.Add(column);
+        else
+            selectedColumns.Remove(column);
+    }
+
+    private string GetDelimiterLabel()
+    {
+        return delimiter switch
+        {
+            "\t" => "Tab (\\t)",
+            "," => ",",
+            ";" => ";",
+            _ => delimiter
+        };
+    }
+
+    private void HandleCsvGenerated(string csv)
+    {
+        csvPreview = csv;
+        statusMessage = $"Export completed at {DateTime.Now:T}";
+    }
+
+    private async Task CopyCsvToClipboard()
+    {
+        if (!string.IsNullOrEmpty(csvPreview))
+        {
+            await JS.InvokeVoidAsync("navigator.clipboard.writeText", csvPreview);
+        }
+    }
+
+    public class Employee
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Department { get; set; } = string.Empty;
+        public int Salary { get; set; }
+    }
+}

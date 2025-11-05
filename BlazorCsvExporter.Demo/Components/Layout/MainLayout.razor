@@ -1,0 +1,24 @@
+﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Routing
+
+<header class="navbar">
+    <div class="container flex-between">
+        <div class="brand">BlazorCsvExporter Demo</div>
+        <nav>
+            <NavLink href="/" Match="NavLinkMatch.All">Home</NavLink>
+            <NavLink href="/export-demo">CSV Export Demo</NavLink>
+        </nav>
+    </div>
+</header>
+
+<main class="content">
+    <div class="container">
+        @Body
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>© 2025 Eloy Martín — BlazorCsvExporter</p>
+    </div>
+</footer>

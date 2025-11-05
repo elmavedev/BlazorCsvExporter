@@ -1,0 +1,95 @@
+﻿@typeparam TItem
+@using System.Linq
+@using System.Text
+@using BlazorCsvExporter.Models
+@using BlazorCsvExporter.Services
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Components
+@inject CsvService CsvService
+@inject IJSRuntime JS
+
+<button @onclick="ExportAsync"
+        disabled="@IsExportDisabled"
+        type="button"
+        aria-label="Download CSV file">
+    @ButtonText
+</button>
+
+@code
+{
+    /// <summary>
+    /// Data source to export as CSV.
+    /// </summary>
+    [Parameter]
+    public IEnumerable<TItem>? Data { get; set; }
+
+    /// <summary>
+    /// File name used for the downloaded CSV file.
+    /// </summary>
+    [Parameter]
+    public string FileName { get; set; } = "export.csv";
+
+    /// <summary>
+    /// Indicates whether the CSV should contain a header row.
+    /// </summary>
+    [Parameter]
+    public bool IncludeHeader { get; set; } = true;
+
+    /// <summary>
+    /// Delimiter string used between fields.
+    /// </summary>
+    [Parameter]
+    public string Delimiter { get; set; } = ";";
+
+    /// <summary>
+    /// Optional list of property names to include in the CSV.
+    /// If null or empty, all public readable properties will be used.
+    /// </summary>
+    [Parameter]
+    public IEnumerable<string>? Columns { get; set; }
+
+    /// <summary>
+    /// Text displayed inside the export button.
+    /// </summary>
+    [Parameter]
+    public string ButtonText { get; set; } = "Export CSV";
+
+    /// <summary>
+    /// Optional callback that receives the generated CSV content.
+    /// Useful for previews, logging, or custom behavior.
+    /// </summary>
+    [Parameter]
+    public EventCallback<string> OnCsvGenerated { get; set; }
+
+    private bool IsExportDisabled => Data == null || !Data.Any();
+
+    private async Task ExportAsync()
+    {
+        if (Data == null || !Data.Any())
+            return;
+
+        var options = new CsvOptions
+        {
+            IncludeHeader = IncludeHeader,
+            Delimiter = Delimiter,
+            Columns = Columns
+        };
+
+        var csv = CsvService.GenerateCsv(Data, options);
+
+        // Trigger the optional callback for preview or logging
+        if (OnCsvGenerated.HasDelegate)
+        {
+            await OnCsvGenerated.InvokeAsync(csv);
+        }
+
+        var bytes = Encoding.UTF8.GetBytes(csv);
+        var base64 = Convert.ToBase64String(bytes);
+
+        await JS.InvokeVoidAsync(
+            "BlazorCsvExporter.downloadFile",
+            FileName,
+            "text/csv;charset=utf-8",
+            base64);
+    }
+}
