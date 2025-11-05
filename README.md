@@ -1,4 +1,7 @@
 ﻿# 📄 Blazor CSV Exporter
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![.NET](https://img.shields.io/badge/.NET-8.0-blue)
+
 
 > A reusable **CSV export component** for Blazor Server and Blazor Web App (.NET 8) — fully dependency-free and easy to integrate.
 
