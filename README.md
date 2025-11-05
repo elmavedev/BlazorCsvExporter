@@ -2,9 +2,6 @@
 
 > A reusable **CSV export component** for Blazor Server and Blazor Web App (.NET 8) — fully dependency-free and easy to integrate.
 
-![Demo Home](docs/demo-home.png)
-![Export Example](docs/demo-export.png)
-
 ---
 
 ## ✨ Features
@@ -134,14 +131,14 @@ It showcases:
 
 ---
 
-## 🪪 License
-
+## 📄 License
 This project is licensed under the [MIT License](LICENSE.txt).  
 © 2025 Eloy Martín — Blazor CSV Exporter
 
 ---
 
 ## 💬 About
-
 Created with ❤️ in Augsburg, Germany.  
-If you find this component useful, consider giving it a ⭐ on [GitHub](https://github.com/el mavedev/BlazorCsvExporter)!
+
+If you find this component useful, consider giving it a ⭐ on  
+[GitHub → elmadev/BlazorCsvExporter](https://github.com/elmadev/BlazorCsvExporter)
