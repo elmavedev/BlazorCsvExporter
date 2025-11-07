@@ -1,147 +1,146 @@
-﻿# 📄 Blazor CSV Exporter
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![.NET](https://img.shields.io/badge/.NET-8.0-blue)
+# BlazorCsvExporter
 
+[![NuGet Version](https://img.shields.io/nuget/v/BlazorCsvExporter.svg)](https://www.nuget.org/packages/BlazorCsvExporter)
+[![Downloads](https://img.shields.io/nuget/dt/BlazorCsvExporter.svg)](https://www.nuget.org/packages/BlazorCsvExporter)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-> A reusable **CSV export component** for Blazor Server and Blazor Web App (.NET 8) — fully dependency-free and easy to integrate.
+BlazorCsvExporter is a lightweight Razor Class Library that allows you to dynamically generate, preview, and download CSV files directly from your Blazor applications.
+
+> Designed for scenarios where users need a real-time CSV preview that updates as they change filters, options, or selections.
+
+---
+
+## 👀 Live preview
+
+Below is an example of the real-time CSV preview before downloading:
+
+> Tip: record a short GIF of your demo (for example using ScreenToGif or ShareX) and save it as `docs/demo-preview.gif` in this repository, then the image below will render automatically.
+
+![BlazorCsvExporter demo](docs/demo-preview.gif)
 
 ---
 
 ## ✨ Features
 
-- ⚙️ **No dependencies** — uses pure C# and built-in Blazor tools  
-- 🧩 **Reusable component** — works with any `IEnumerable<T>` data source  
-- 🪶 **Lightweight** — no external CSV libraries required  
-- 💡 **Configurable options** — choose delimiter, include headers, and select columns  
-- 💾 **Instant download** — generates and downloads the CSV directly in the browser  
+- ✅ Generate CSV files from in-memory data
+- ✅ Real-time CSV preview with automatic updates
+- ✅ Simple Blazor component integration
+- ✅ Works with Blazor Server and Blazor WebAssembly (.NET 8)
+- ✅ No external dependencies required
 
 ---
 
-## 🚀 Quick Start
+## 📦 Installation
 
-### 1️⃣ Install or copy the component
+### Using .NET CLI
 
-Clone the repository or copy these folders into your project:
-
-```
-BlazorCsvExporter/
-├── Components/
-│   └── CsvExporter.razor
-├── Models/
-│   └── CsvOptions.cs
-├── Services/
-│   └── CsvService.cs
-└── wwwroot/
-    └── csvDownloader.js
+```bash
+dotnet add package BlazorCsvExporter
 ```
 
-Then, register the service in your `Program.cs`:
+### Using PackageReference
 
-```csharp
-using BlazorCsvExporter.Services;
-
-builder.Services.AddScoped<CsvService>();
-```
-
-And reference the JavaScript helper in your root `_Host.cshtml` or `index.html`:
-
-```html
-<script src="_content/BlazorCsvExporter/csvDownloader.js"></script>
+```xml
+<ItemGroup>
+  <PackageReference Include="BlazorCsvExporter" Version="1.0.1" />
+</ItemGroup>
 ```
 
 ---
 
-## 🧱 Example Usage
+## 🚀 Quick start
+
+Add this line to your `_Imports.razor` file:
 
 ```razor
-@page "/export-demo"
-@using BlazorCsvExporter.Components
+@using BlazorCsvExporter
+```
 
-<h3>Employee List</h3>
+Then use the exporter component in any Blazor page:
 
-<CsvExporter TItem="Employee"
-             Data="@employees"
-             FileName="Employees.csv"
-             IncludeHeader="true"
-             Delimiter=";"
-             ButtonText="Download CSV" />
+```razor
+@page "/csv-demo"
+
+<h3>CSV Export Demo</h3>
+
+<!-- Replace parameter names with your actual implementation -->
+<CsvExporter
+    Items="@people"
+    FileName="people.csv"
+    ShowPreview="true" />
 
 @code {
-    private List<Employee> employees = new()
-    {
-        new() { Name = "John",  Department = "IT",       Salary = 45000 },
-        new() { Name = "Anna",  Department = "HR",       Salary = 42000 },
-        new() { Name = "Peter", Department = "Finance",  Salary = 50000 }
-    };
-
-    public class Employee
+    public class Person
     {
         public string Name { get; set; } = string.Empty;
-        public string Department { get; set; } = string.Empty;
-        public int Salary { get; set; }
+        public int Age { get; set; }
+        public string City { get; set; } = string.Empty;
     }
+
+    private List<Person> people = new()
+    {
+        new Person { Name = "Alice", Age = 30, City = "Berlin" },
+        new Person { Name = "Bob", Age = 25, City = "Augsburg" },
+        new Person { Name = "Charlie", Age = 35, City = "Munich" }
+    };
 }
 ```
 
----
-
-## ⚙️ Component Parameters
-
-| Parameter        | Type                     | Default        | Description |
-|------------------|--------------------------|----------------|--------------|
-| `Data`           | `IEnumerable<TItem>?`    | —              | Data source to export |
-| `FileName`       | `string`                 | `"export.csv"` | Name of the CSV file |
-| `IncludeHeader`  | `bool`                   | `true`         | Include header row |
-| `Delimiter`      | `string`                 | `";"`          | CSV delimiter |
-| `Columns`        | `IEnumerable<string>?`   | `null`         | Columns to include (optional) |
-| `ButtonText`     | `string`                 | `"Export CSV"` | Button label |
-| `OnCsvGenerated` | `EventCallback<string>`  | —              | Event triggered with CSV content |
+> Note: adjust the component name (`CsvExporter`) and parameter names (`Items`, `FileName`, `ShowPreview`) to match the actual API of this library.
 
 ---
 
-## 🧠 How It Works
+## ⚙️ Parameters (example)
 
-1. The component builds a CSV string using reflection (`CsvService.GenerateCsv<T>`).  
-2. The result is encoded to Base64.  
-3. A small JavaScript helper creates a downloadable file directly in the browser.
+| Parameter    | Type            | Description                               |
+|-------------|-----------------|-------------------------------------------|
+| `Items`     | `IEnumerable<T>`| Data source for the CSV file             |
+| `FileName`  | `string`        | Name of the file when downloaded         |
+| `ShowPreview` | `bool`        | Shows or hides the live CSV preview      |
 
-No temporary files. No server-side storage. Just pure client download.
+Update this table according to your final public API.
 
 ---
 
-## 🧪 Demo Project
+## 🧪 Demo project
 
-A complete demo is included under:
+This repository contains a demo project that shows how to:
 
-```
-BlazorCsvExporter.Demo/
+- Configure and use the CSV exporter
+- Bind it to real data
+- Use the dynamic preview before downloading the file
+
+You can run the demo with:
+
+```bash
+dotnet run --project BlazorCsvExporter.Demo
 ```
 
-It showcases:
-- Interactive delimiter and column selection  
-- CSV preview  
-- Clipboard copy button  
+---
+
+## 🗺 Roadmap / ideas
+
+Some ideas that may be implemented in future versions or a Pro edition:
+
+- Export to Excel (`.xlsx`)
+- Custom column selection and ordering
+- Different delimiters and encodings (`,`, `;`, etc.)
+- Server-side or cloud storage integration
 
 ---
 
-## 🖼️ Screenshots
+## 📝 License
 
-### Home
-![Demo Home](docs/demo-home.png)
-
-### CSV Export Example
-![Export Example](docs/demo-export.png)
+This project is licensed under the **MIT License**.  
+You are free to use it in both commercial and personal projects.
 
 ---
 
-## 📄 License
-This project is licensed under the [MIT License](LICENSE.txt).  
-© 2025 Eloy Martín — Blazor CSV Exporter
+## 💬 Feedback & contributions
 
----
+If you find a bug, have an idea, or want to contribute:
 
-## 💬 About
-Created with ❤️ in Augsburg, Germany.  
+- Open an issue: https://github.com/elmavedev/BlazorCsvExporter/issues
+- Submit a pull request with improvements
 
-If you find this component useful, consider giving it a ⭐ on  
-[GitHub → elmadev/BlazorCsvExporter](https://github.com/elmadev/BlazorCsvExporter)
+If this library saves you time, please ⭐ the repository on GitHub!
