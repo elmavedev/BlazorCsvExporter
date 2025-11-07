@@ -1,8 +1,12 @@
 ﻿@page "/export-demo"
 @rendermode InteractiveServer
+
 @using BlazorCsvExporter.Components
+@using BlazorCsvExporter.Models
+@using BlazorCsvExporter.Services
 @using Microsoft.JSInterop
 @inject IJSRuntime JS
+@inject CsvService CsvService
 
 <PageTitle>BlazorCsvExporter Demo — CSV Export</PageTitle>
 
@@ -18,7 +22,7 @@
         <div class="demo-controls-row">
             <label>
                 <span class="control-label">Delimiter:</span>
-                <select @bind="delimiter">
+                <select @bind="Delimiter">
                     <option value=";">Semicolon (;)</option>
                     <option value=",">Comma (,)</option>
                     <option value="\t">Tab (\t)</option>
@@ -26,7 +30,7 @@
             </label>
 
             <label class="checkbox-label">
-                <input type="checkbox" @bind="includeHeader" />
+                <input type="checkbox" @bind="IncludeHeader" />
                 Include header row
             </label>
         </div>
@@ -50,7 +54,8 @@
     <p class="note small">
         <strong>@employees.Count</strong> record(s) will be exported using
         <code>@GetDelimiterLabel()</code> as delimiter,
-        @(includeHeader ? "including" : "without") a header row.
+        @(IncludeHeader ? "including" : "without") a header row.
+        The preview below updates automatically as you change the options.
     </p>
 
     <!-- Employee table -->
@@ -87,8 +92,8 @@
     <CsvExporter TItem="Employee"
                  Data="@employees"
                  FileName="@fileName"
-                 IncludeHeader="@includeHeader"
-                 Delimiter="@delimiter"
+                 IncludeHeader="@IncludeHeader"
+                 Delimiter="@Delimiter"
                  Columns="SelectedColumns"
                  ButtonText="@buttonText"
                  OnCsvGenerated="HandleCsvGenerated" />
@@ -98,7 +103,7 @@
     </p>
 </div>
 
-<!-- CSV preview -->
+<!-- CSV preview (auto-updated) -->
 @if (!string.IsNullOrEmpty(csvPreview))
 {
     <div class="csv-preview">
@@ -118,13 +123,14 @@
 <div class="card dev-note">
     <strong>Developer notes</strong>
     <ul>
-        <li>Uses <code>CsvService.GenerateCsv&lt;T&gt;</code> under the hood.</li>
-        <li>CSV is generated in-memory and downloaded via a <code>data:</code> URL.</li>
-        <li>No external CSV libraries or dependencies are required.</li>
+        <li>Preview is generated using <code>CsvService.GenerateCsv&lt;T&gt;</code> as you change the options.</li>
+        <li>The download button uses the same options to create the final CSV file.</li>
+        <li>CSV is generated in-memory and downloaded via a <code>data:</code> URL (no external dependencies).</li>
     </ul>
 </div>
 
 @code {
+    // Demo data
     private List<Employee> employees = new()
     {
         new() { Name = "John",  Department = "IT",       Salary = 45000 },
@@ -132,6 +138,7 @@
         new() { Name = "Peter", Department = "Finance",  Salary = 50000 }
     };
 
+    // All available columns (property names)
     private readonly string[] allColumns = new[]
     {
         nameof(Employee.Name),
@@ -139,14 +146,44 @@
         nameof(Employee.Salary)
     };
 
+    // Selected columns (internal state)
     private readonly HashSet<string> selectedColumns = new();
 
+    // Backing fields for options
     private string delimiter = ";";
     private bool includeHeader = true;
+
     private string fileName = "Employees.csv";
     private string buttonText = "Download Employee List";
     private string? csvPreview;
-    private string statusMessage = "Ready to export";
+    private string statusMessage = "Preview ready";
+
+    // Properties with setters that update the preview
+    private string Delimiter
+    {
+        get => delimiter;
+        set
+        {
+            if (delimiter != value)
+            {
+                delimiter = value;
+                UpdateCsvPreview();
+            }
+        }
+    }
+
+    private bool IncludeHeader
+    {
+        get => includeHeader;
+        set
+        {
+            if (includeHeader != value)
+            {
+                includeHeader = value;
+                UpdateCsvPreview();
+            }
+        }
+    }
 
     protected override void OnInitialized()
     {
@@ -155,6 +192,9 @@
         {
             selectedColumns.Add(col);
         }
+
+        // Generate initial preview
+        UpdateCsvPreview();
     }
 
     private IEnumerable<string> SelectedColumns =>
@@ -169,23 +209,45 @@
             selectedColumns.Add(column);
         else
             selectedColumns.Remove(column);
+
+        UpdateCsvPreview();
     }
 
     private string GetDelimiterLabel()
     {
-        return delimiter switch
+        return Delimiter switch
         {
             "\t" => "Tab (\\t)",
             "," => ",",
             ";" => ";",
-            _ => delimiter
+            _ => Delimiter
         };
+    }
+
+    private void UpdateCsvPreview()
+    {
+        if (!employees.Any())
+        {
+            csvPreview = string.Empty;
+            statusMessage = "No data to preview";
+            return;
+        }
+
+        var options = new CsvOptions
+        {
+            IncludeHeader = IncludeHeader,
+            Delimiter = Delimiter,
+            Columns = SelectedColumns
+        };
+
+        csvPreview = CsvService.GenerateCsv(employees, options);
+        statusMessage = "Preview updated";
     }
 
     private void HandleCsvGenerated(string csv)
     {
-        csvPreview = csv;
-        statusMessage = $"Export completed at {DateTime.Now:T}";
+        // Keep this for demo purposes: when the user actually downloads the file
+        statusMessage = $"File downloaded at {DateTime.Now:T}";
     }
 
     private async Task CopyCsvToClipboard()
