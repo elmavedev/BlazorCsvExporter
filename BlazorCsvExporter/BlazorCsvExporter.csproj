@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
 
     <!-- Disable static web assets support for this library (no wwwroot, no JS/CSS) -->
-    <StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
+    <StaticWebAssetsEnabled>true</StaticWebAssetsEnabled>
 
     <!-- Enable packing this project as a NuGet package -->
     <IsPackable>true</IsPackable>
