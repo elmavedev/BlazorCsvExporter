@@ -29,7 +29,7 @@ dotnet add package BlazorCsvExporter
 ### Using PackageReference
 ```xml
 <ItemGroup>
-  <PackageReference Include="BlazorCsvExporter" Version="1.0.1" />
+  <PackageReference Include="BlazorCsvExporter" Version="1.0.3" />
 </ItemGroup>
 ```
 
