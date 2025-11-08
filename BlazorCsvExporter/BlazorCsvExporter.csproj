@@ -16,7 +16,6 @@
     <PackageId>BlazorCsvExporter</PackageId>
     <Version>1.0.1</Version>
     <Authors>Eloy Martín Ventura</Authors>
-    <Company>PP IT-Systeme GmbH</Company>
 
     <!-- What this package does -->
     <Description>
