@@ -33,12 +33,41 @@ dotnet add package BlazorCsvExporter
 </ItemGroup>
 ```
 
-### Add the JS helper
+---
 
-In your host file (`index.html`, `_Host.cshtml`, etc.) include:
+## 🔧 JavaScript Setup
+
+`BlazorCsvExporter` requires a small JavaScript helper to handle file downloads.  
+If you are using the **included demo project**, this script is already referenced.  
+
+However, if you install the library **directly from NuGet** in your own Blazor app,  
+you need to add the following line manually in your host page:
+
+### 👉 For Blazor WebAssembly
+Add this line in `wwwroot/index.html`, right before the Blazor script:
 
 ```html
 <script src="_content/BlazorCsvExporter/csvDownloader.js"></script>
+<script src="_framework/blazor.web.js"></script>
+```
+
+### 👉 For Blazor Server
+Add this line in `Pages/_Host.cshtml` (or `_Layout.cshtml` if applicable), right before `blazor.server.js`:
+
+```html
+<script src="_content/BlazorCsvExporter/csvDownloader.js"></script>
+<script src="_framework/blazor.server.js"></script>
+```
+
+This script defines the global object `window.BlazorCsvExporter`  
+and the function `downloadFile(...)` used internally by the component.  
+Without this reference, the export button will throw an error such as:
+
+```
+Could not find 'BlazorCsvExporter.downloadFile' ('BlazorCsvExporter' was undefined)
+```
+
+Once the script is included, the download feature should work correctly in any Blazor app.
 
 ---
 
