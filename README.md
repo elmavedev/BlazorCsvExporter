@@ -19,20 +19,34 @@ Designed for developers who need instant CSV preview updates as users change opt
 
 ---
 
+## 🆕 What's new in 1.0.5
+
+- ✔️ Added automated **GitHub Actions** workflow to build and run tests on each push/PR  
+- ✔️ Improved installation instructions to always use the **latest NuGet version**  
+- ✔️ Initial **unit test project** for the CSV generation core  
+- ✔️ Minor documentation and repo cleanup 
+
+This release consolidates all fixes and ensures the package passes all NuGet.org health checks ✅✅✅
+
+---
+
 ## 📦 Installation
 
 ### Using .NET CLI
 ```bash
-dotnet add package BlazorCsvExporter --version 1.0.4
+dotnet add package BlazorCsvExporter
 ```
 
 This command will always pull the latest stable version from NuGet.org.
 
 ### Using PackageReference
 
+You can also install the package via the NuGet Package Manager UI in Visual Studio.  
+Your `.csproj` file will receive an entry similar to the following:
+
 ```xml
 <ItemGroup>
-  <PackageReference Include="BlazorCsvExporter" Version="1.0.1" />
+  <PackageReference Include="BlazorCsvExporter" Version="x.y.z" />
 </ItemGroup>
 ```
 
@@ -40,10 +54,81 @@ This command will always pull the latest stable version from NuGet.org.
 
 ---
 
-## 🚀 Quick start
+## 🔧 JavaScript Setup
+
+`BlazorCsvExporter` requires a small JavaScript helper to handle file downloads.  
+If you are using the **included demo project**, this script is already referenced.  
+
+However, if you install the library **directly from NuGet** in your own Blazor app,  
+you need to add the following line manually in your host page:
+
+### 👉 For Blazor WebAssembly
+Add this line in `wwwroot/index.html`, right before the Blazor script:
+
+```html
+<script src="_content/BlazorCsvExporter/csvDownloader.js"></script>
+<script src="_framework/blazor.web.js"></script>
+```
+
+### 👉 For Blazor Server
+Add this line in `Pages/_Host.cshtml` (or `_Layout.cshtml` if applicable), right before `blazor.server.js`:
+
+```html
+<script src="_content/BlazorCsvExporter/csvDownloader.js"></script>
+<script src="_framework/blazor.server.js"></script>
+```
+
+This script defines the global object `window.BlazorCsvExporter`  
+and the function `downloadFile(...)` used internally by the component.  
+Without this reference, the export button will throw an error such as:
+
+```
+Could not find 'BlazorCsvExporter.downloadFile' ('BlazorCsvExporter' was undefined)
+```
+
+Once the script is included, the download feature should work correctly in any Blazor app.
+
+---
+
+## 🔧 JavaScript Setup
+
+`BlazorCsvExporter` requires a small JavaScript helper to handle file downloads.  
+If you are using the **included demo project**, this script is already referenced.  
+
+However, if you install the library **directly from NuGet** in your own Blazor app,  
+you need to add the following line manually in your host page:
+
+### 👉 For Blazor WebAssembly
+Add this line in `wwwroot/index.html`, right before the Blazor script:
+
+```html
+<script src="_content/BlazorCsvExporter/csvDownloader.js"></script>
+<script src="_framework/blazor.web.js"></script>
+```
+
+### 👉 For Blazor Server
+Add this line in `Pages/_Host.cshtml` (or `_Layout.cshtml` if applicable), right before `blazor.server.js`:
+
+```html
+<script src="_content/BlazorCsvExporter/csvDownloader.js"></script>
+<script src="_framework/blazor.server.js"></script>
+```
+
+This script defines the global object `window.BlazorCsvExporter`  
+and the function `downloadFile(...)` used internally by the component.  
+Without this reference, the export button will throw an error such as:
+
+```
+Could not find 'BlazorCsvExporter.downloadFile' ('BlazorCsvExporter' was undefined)
+```
+
+Once the script is included, the download feature should work correctly in any Blazor app.
+
+---
+
+## 🚀 Quick Start Example
 
 Add this line to your `_Imports.razor` file:
-
 ```razor
 @using BlazorCsvExporter
 ```
@@ -82,26 +167,19 @@ Then use the exporter component in any Blazor page:
 
 ## ⚙️ Parameters
 
-| Parameter    | Type            | Description                               |
-|-------------|-----------------|-------------------------------------------|
-| `Items`     | `IEnumerable<T>`| Data source for the CSV file             |
-| `FileName`  | `string`        | Name of the file when downloaded         |
-| `ShowPreview` | `bool`        | Shows or hides the live CSV preview      |
-
-Update this table according to your final public API.
+| Parameter | Type | Description |
+|------------|------|-------------|
+| `Items` | `IEnumerable<T>` | Data source for the CSV file |
+| `FileName` | `string` | Name of the file when downloaded |
+| `ShowPreview` | `bool` | Shows or hides the live CSV preview |
 
 ---
 
 ## 🧪 Demo Project
 
-This repository contains a demo project that shows how to:
+The repository includes a working demo under `BlazorCsvExporter.Demo`.
 
-- Configure and use the CSV exporter
-- Bind it to real data
-- Use the dynamic preview before downloading the file
-
-You can run the demo with:
-
+Run it with:
 ```bash
 dotnet run --project BlazorCsvExporter.Demo
 ```
@@ -115,11 +193,9 @@ You are free to use it in both commercial and personal projects.
 
 ---
 
-## 💬 Feedback & contributions
+## 💬 Feedback & Support
 
-If you find a bug, have an idea, or want to contribute:
+If you find bugs or want to suggest improvements:  
+👉 Open an issue on GitHub: https://github.com/elmavedev/BlazorCsvExporter/issues
 
-- Open an issue: https://github.com/elmavedev/BlazorCsvExporter/issues
-- Submit a pull request with improvements
-
-If this library saves you time, please ⭐ the repository on GitHub!
+If this project saves you time, please ⭐ it on GitHub!

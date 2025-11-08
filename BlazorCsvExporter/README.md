@@ -21,10 +21,10 @@ Designed for developers who need instant CSV preview updates as users change opt
 
 ## 🆕 What's new in 1.0.5
 
-- ✔️ **Deterministic builds** and full **SourceLink symbols** for better NuGet package health  
-- ✔️ Fixed version mismatch between README and NuGet metadata  
-- ✔️ Added **basic unit tests** for core CSV generation (initial coverage)  
-- ✔️ Internal cleanup and improved build configuration  
+- ✔️ Added automated **GitHub Actions** workflow to build and run tests on each push/PR  
+- ✔️ Improved installation instructions to always use the **latest NuGet version**  
+- ✔️ Initial **unit test project** for the CSV generation core  
+- ✔️ Minor documentation and repo cleanup 
 
 This release consolidates all fixes and ensures the package passes all NuGet.org health checks ✅✅✅
 

@@ -7,7 +7,7 @@
 
     <!-- NuGet metadata -->
     <PackageId>BlazorCsvExporter</PackageId>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
     <Authors>Eloy Martín Ventura</Authors>
     <Company>elmavedev</Company>
     <PackageDescription>Lightweight CSV exporter component for Blazor applications.</PackageDescription>
