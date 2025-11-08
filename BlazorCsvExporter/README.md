@@ -33,6 +33,13 @@ dotnet add package BlazorCsvExporter
 </ItemGroup>
 ```
 
+### Add the JS helper
+
+In your host file (`index.html`, `_Host.cshtml`, etc.) include:
+
+```html
+<script src="_content/BlazorCsvExporter/csvDownloader.js"></script>
+
 ---
 
 ## 🚀 Quick Start Example
