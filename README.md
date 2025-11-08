@@ -19,17 +19,28 @@ Designed for developers who need instant CSV preview updates as users change opt
 
 ---
 
+## 🆕 What's new in 1.0.4
+
+- ✔️ **Deterministic builds** and full **SourceLink symbols** for better NuGet package health  
+- ✔️ Fixed version mismatch between README and NuGet metadata  
+- ✔️ Added **basic unit tests** for core CSV generation  
+- ✔️ Internal cleanup and improved build configuration  
+
+This release consolidates all fixes and ensures the package passes all NuGet.org health checks ✅✅✅
+
+---
+
 ## 📦 Installation
 
 ### Using .NET CLI
 ```bash
-dotnet add package BlazorCsvExporter
+dotnet add package BlazorCsvExporter --version 1.0.4
 ```
 
 ### Using PackageReference
 ```xml
 <ItemGroup>
-  <PackageReference Include="BlazorCsvExporter" Version="1.0.3" />
+  <PackageReference Include="BlazorCsvExporter" Version="1.0.4" />
 </ItemGroup>
 ```
 
