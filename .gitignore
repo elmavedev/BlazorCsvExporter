@@ -38,3 +38,6 @@ project.lock.json
 *.DS_Store
 Thumbs.db
 *.orig
+/BlazorCsvExporter.Pro
+/BlazorCsvExporter.Demo/Components/Pages/ProDemo.razor
+/BlazorCsvExporter.Demo/Components/Layout/MainLayout.razor

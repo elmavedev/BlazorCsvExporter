@@ -5,49 +5,42 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
 
-    <!-- Disable static web assets support for this library (no wwwroot, no JS/CSS) -->
-    <StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
-
-    <!-- Enable packing this project as a NuGet package -->
-    <IsPackable>true</IsPackable>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-
-    <!-- Basic NuGet package metadata -->
+    <!-- NuGet metadata -->
     <PackageId>BlazorCsvExporter</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.4</Version>
     <Authors>Eloy Martín Ventura</Authors>
-    <Company>PP IT-Systeme GmbH</Company>
-
-    <!-- What this package does -->
-    <Description>
-      BlazorCsvExporter is a lightweight Razor Class Library that allows you to dynamically generate, preview and download CSV files in Blazor.
-    </Description>
-
-    <!-- Repository and project URLs shown on NuGet -->
+    <Company>elmavedev</Company>
+    <PackageDescription>Lightweight CSV exporter component for Blazor applications.</PackageDescription>
     <RepositoryUrl>https://github.com/elmavedev/BlazorCsvExporter</RepositoryUrl>
     <PackageProjectUrl>https://github.com/elmavedev/BlazorCsvExporter</PackageProjectUrl>
-
-    <!-- Tags help people find your package on NuGet -->
-    <PackageTags>blazor csv export razor-class-library component</PackageTags>
-
-    <!-- MIT license already in your repo (LICENSE file) -->
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-
-    <!-- Use README.md as the NuGet package description -->
+    <PackageTags>blazor;csv;export</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+
+    <!-- Deterministic & SourceLink configuration -->
+    <Deterministic>true</Deterministic>
+    <DebugType>portable</DebugType>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+
+    <!-- Generate package -->
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.21" />
-  </ItemGroup>
-
-  <!-- Include README.md file inside the NuGet package root -->
-  <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
